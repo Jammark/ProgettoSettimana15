@@ -7,7 +7,7 @@
 			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/cbe"/>
 			<property name="javax.persistence.jdbc.user" value="postgres"/>
 			<property name="javax.persistence.jdbc.password" value="ioloso125"/>
-			<property name="hibernate.hbm2ddl.auto" value="drop-and-create"/>
+			<property name="hibernate.hbm2ddl.auto" value="create-drop"/>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
 			<property name="hibernate.default_schema" value="public"/>
 		</properties>
