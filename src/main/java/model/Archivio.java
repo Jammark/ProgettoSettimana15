@@ -40,6 +40,8 @@ public class Archivio {
 
 	public boolean rimuoviArticolo(String codice) {
 		ArticoloCartaceo a = em.find(ArticoloCartaceo.class, UUID.fromString(codice));
+
+		log.info("Trovato articolo da rimuovere: " + a);
 		if (a == null) {
 			return false;
 		}

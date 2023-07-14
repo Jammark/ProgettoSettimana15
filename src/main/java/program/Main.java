@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.function.Predicate;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import com.github.javafaker.Faker;
 
@@ -69,9 +70,37 @@ public class Main {
 					.getResultList();
 			savePrestiti(articoli, daoP, utenti.get(0), utenti.get(1));
 		}
-
-		List<Prestito> prestiti = em.createQuery("SELECT p FROM Prestito p", Prestito.class).getResultList();
+		Query query = em.createQuery("SELECT p FROM Prestito p", Prestito.class);
+		List<Prestito> prestiti = query.getResultList();
 		prestiti.forEach(prestito -> log.info("Prestiti: " + prestito));
+
+		ArticoloCartaceo elemento1 = archivio.findByISBN(libri.get(0).getCodiceISBN().toString());
+		boolean risultato = archivio.rimuoviArticolo(elemento1.getCodiceISBN().toString());
+		if (risultato) {
+			log.info("Articolo rimosso: " + elemento1);
+		}
+
+		List<ArticoloCartaceo> byYear = archivio.findByYear(libri.get(1).getAnnoPubblicazione());
+		byYear.forEach(e -> log.info("Ricerca secondo anno: " + e));
+
+		List<Libro> byAuthor = archivio.findByAuthor(libri.get(1).getAutore());
+		byAuthor.forEach(e -> log.info("Ricerca secondo autore: " + e));
+
+		List<ArticoloCartaceo> byTitle = archivio.findByTitle(libri.get(1).getTitolo().substring(0, 3));
+		byTitle.forEach(e -> log.info("Ricerca secondo titolo: " + e));
+
+		List<ArticoloCartaceo> inPrestito = archivio.inprestito(u1.getNumeroDiTessera());
+		inPrestito.forEach(e -> log.info("Articoli in prestito: " + e));
+
+		prestiti = query.getResultList();
+
+		prestiti.stream().limit(7).forEach(prestito -> {
+			prestito.setDataRestituzioneEffettiva(LocalDate.now().minusDays(100));
+			daoP.save(prestito);
+		});
+
+		List<Prestito> daRestituire = archivio.getScaduti();
+		daRestituire.forEach(prestito -> log.info("Ancora da restituire: " + prestito));
 
 	}
 
